@@ -10,9 +10,10 @@ import java.lang.reflect.Field;
 import java.net.Socket;
 import java.util.List;
 
-import com.Main;
+import com.yc.WeChatPanel;
 import com.yc.utils.esbUtils.FileUtil;
 import com.yc.utils.esbUtils.JsonTools;
+import com.yc.utils.esbUtils.StringUtils;
 
 public class WeChatSend {
 	private static String ACCESS_TOKEN = "ACCESS_TOKEN";
@@ -55,12 +56,15 @@ public class WeChatSend {
 				e.printStackTrace();
 			}
 			if(getLine!=null){
-				System.out.println(getLine);
+//				System.out.println(getLine);
 				
 				FileUtil.mkdir(TemplateMsg.BASE_DIR);
 				FileUtil.createTxt(TemplateMsg.BASE_DIR+TemplateMsg.ledname, getLine, charsetName);
 				
+				getTemplateMsg(getLine);
+				
 				fieldSet(Boolean.TRUE);
+				
 			}
 			out.write("ok\n");
 			out.flush();
@@ -76,8 +80,8 @@ public class WeChatSend {
 	}
 	public static void fieldSet(Boolean isSend){
 		try {
-			Object o=Main.class.newInstance();//获取对象
-			Field f=Main.class.getField("send");//根据key获取参数
+			Object o=WeChatPanel.class.newInstance();//获取对象
+			Field f=WeChatPanel.class.getField("send");//根据key获取参数
 			f.set(o, isSend);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
@@ -89,7 +93,11 @@ public class WeChatSend {
 			e.printStackTrace();
 		}
 	}
-	public static void sendTemplateMsg(String vin,String status) {
+	public static void getTemplateMsg(String mesg) {
+		String[] ss = mesg.split(StringUtils.spilt1);
+		sendTemplateMsg(ss[0], ss[1]);
+	}
+	private static void sendTemplateMsg(String vin,String status) {
 		// TODO Auto-generated method stub
 //		String type = "";
 		//业务参数
