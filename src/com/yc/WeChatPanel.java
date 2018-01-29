@@ -21,7 +21,7 @@ import javax.swing.Timer;
 import com.yc.utils.esbUtils.DateUtil;
 import com.yc.utils.esbUtils.FileUtil;
 import com.yc.utils.esbUtils.StringUtils;
-import com.yc.weChat.TemplateMsg;
+import com.yc.utils.files.PropertiesUtil;
 import com.yc.weChat.WeChatSend;
 
 public class WeChatPanel {
@@ -36,7 +36,7 @@ public class WeChatPanel {
 	public static boolean send = false;
 	
 	public static void sendChat() throws IOException{
-		final String port = "8897";//可配置
+		final String port = PropertiesUtil.getPropertiesKey(WeChartGlobal.PORTMESG, WeChartGlobal.PORT);
 		
 		ServerSocket server = new ServerSocket(Integer.valueOf(port));
 		Socket socket = null;
@@ -106,7 +106,7 @@ public class WeChatPanel {
 		}
     }
 	private static String readUsers(){
-		File file = new  File(TemplateMsg.BASE_DIR+TemplateMsg.ledname);  
+		File file = new  File(WeChartGlobal.ledname);//WeChartGlobal.BASE_DIR+  
         if(!file.exists()){
         	return file_no;
         }

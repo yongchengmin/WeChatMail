@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: com.Main
+Class-Path: MAVEN_REPO/commons-lang/jars/commons-lang-2.1.jar MAVEN_REPO/itms/jars/ycUtils-1.0.jar MAVEN_REPO/json/jars/ezmorph-1.0.6.jar MAVEN_REPO/json/jars/json-lib-2.4-jdk15.jar MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar MAVEN_REPO/commons-collections/jars/commons-collections-3.1.jar MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar
 Created-By: yc.min

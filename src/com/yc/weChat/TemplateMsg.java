@@ -3,24 +3,18 @@ package com.yc.weChat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.yc.WeChartGlobal;
 import com.yc.utils.url.UrlReqUtil;
 import com.yc.utils.wechar.Template;
 import com.yc.utils.wechar.TemplateParam;
 public class TemplateMsg {
-	public static String BASE_DIR = "d:/wechat-openid/";//存放配置文件的根目录
-	public static String URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
-	public static String templateId = "09-mNpH07Up_D4Ycrms8uHI98TEoASuxh76pPW6vhRM";
-	public static String topColor = "#00DD00";
-	public static String pathname = "openid-used.txt";
-	public static String ledname = "led-wechat.txt";
-	
 	public static String sendTemplateMsg(String requestUrl,String token,String vin,String status,String remark
-			,List<String> list,String openid){
+			,String openid){
 		//用户在该公众号下的openid
 		//3 调用模板消息的发送方法
 		Template tem=new Template();
-		tem.setTemplateId(templateId);//为模板id 
-		tem.setTopColor(topColor);
+		tem.setTemplateId(WeChartGlobal.templateId);//为模板id 
+		tem.setTopColor(WeChartGlobal.topColor);
 		tem.setToUser(openid);
 		tem.setUrl("");
 				

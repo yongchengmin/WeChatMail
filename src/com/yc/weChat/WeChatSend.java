@@ -8,18 +8,15 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.Socket;
-import java.util.List;
 
+import com.yc.WeChartGlobal;
 import com.yc.WeChatPanel;
 import com.yc.utils.esbUtils.FileUtil;
 import com.yc.utils.esbUtils.JsonTools;
 import com.yc.utils.esbUtils.StringUtils;
+import com.yc.utils.files.PropertiesUtil;
 
 public class WeChatSend {
-	private static String ACCESS_TOKEN = "ACCESS_TOKEN";
-	public static String dmy_hms = "yyyy-MM-dd HH:mm:ss";
-	public static String charsetName = "UTF-8";
-	
 	public static void createHandlerThread(Socket socket){
 		WeChatSend mas = WeChatSend.getInstance();
 		Handler handler = mas.new Handler(socket);
@@ -42,8 +39,8 @@ public class WeChatSend {
 			BufferedReader in = null;
 			PrintWriter out = null;
 			try {
-				in = new BufferedReader(new InputStreamReader(socket.getInputStream(), charsetName));
-				out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), charsetName));
+				in = new BufferedReader(new InputStreamReader(socket.getInputStream(), WeChartGlobal.charsetName));
+				out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), WeChartGlobal.charsetName));
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -58,8 +55,8 @@ public class WeChatSend {
 			if(getLine!=null){
 //				System.out.println(getLine);
 				
-				FileUtil.mkdir(TemplateMsg.BASE_DIR);
-				FileUtil.createTxt(TemplateMsg.BASE_DIR+TemplateMsg.ledname, getLine, charsetName);
+//				FileUtil.mkdir(WeChartGlobal.BASE_DIR);
+				FileUtil.createTxt(WeChartGlobal.ledname, getLine, WeChartGlobal.charsetName);//WeChartGlobal.BASE_DIR+
 				
 				getTemplateMsg(getLine);
 				
@@ -102,21 +99,27 @@ public class WeChatSend {
 //		String type = "";
 		//业务参数
 		String remark = "感谢您的关注与支持";
-		List<String> list;
+		String nums = PropertiesUtil.getPropertiesKey(WeChartGlobal.PORTMESG, WeChartGlobal.OPENIDS);
+		int size = 0;
 		try {
-			list = FileUtil.fileToList(TemplateMsg.BASE_DIR+TemplateMsg.pathname);//"d:/openid.txt",d:/openid-used.txt
-			if(list!=null && list.size()>0){
-				String token = WeixinAccessTokenMsg.getWeCharAccessToken();
-				if(token!=null){
-					String requestUrl =TemplateMsg.URL.replace(ACCESS_TOKEN,token);
-					for(String openid : list){
-						String result = TemplateMsg.sendTemplateMsg(requestUrl, token, vin, status, remark, list, openid);
+			size = Integer.valueOf(nums);
+		} catch (Exception e) {
+			size = 0;
+		}
+		if(size>0){
+			String token = WeixinAccessTokenMsg.getWeCharAccessToken();
+			if(token!=null){
+				String requestUrl =WeChartGlobal.URL.replace(WeChartGlobal.ACCESS_TOKEN,token);
+				for(int i = 1 ; i<=size; i++){
+					String openid = PropertiesUtil.getPropertiesKey(WeChartGlobal.PORTMESG, WeChartGlobal.OPENID+i);
+					if(openid!=null){
+						String result = TemplateMsg.sendTemplateMsg(requestUrl, token, vin, status, remark, openid);
 						//{"":40001,"errmsg":"invalid credential, access_token is invalid or not latest hint: [CYHbfa0259vr44!]"}
 						String errcode = JsonTools.getJsonKey(result, "errcode");
 						if(errcode!=null && "40001".equals(errcode)){//要重新获取 access_token
 							token = WeixinAccessTokenMsg.weCharAccessToken();
-							requestUrl =TemplateMsg.URL.replace(ACCESS_TOKEN,token);
-							result = TemplateMsg.sendTemplateMsg(requestUrl, token, vin, status, remark, list, openid);
+							requestUrl =WeChartGlobal.URL.replace(WeChartGlobal.ACCESS_TOKEN,token);
+							result = TemplateMsg.sendTemplateMsg(requestUrl, token, vin, status, remark, openid);
 							errcode = JsonTools.getJsonKey(result, "errcode");
 						}
 						if(errcode!=null && "0".equals(errcode)){
@@ -127,10 +130,6 @@ public class WeChatSend {
 					}
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			
 		}
 	}
 

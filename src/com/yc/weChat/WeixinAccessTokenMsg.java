@@ -11,16 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONObject;
+
+import com.yc.WeChartGlobal;
 import com.yc.utils.esbUtils.DateUtil;
 import com.yc.utils.esbUtils.FileUtil;
 import com.yc.utils.files.PropertiesUtil;
 import com.yc.utils.url.UrlReqUtil;
 
 public class WeixinAccessTokenMsg{
-	public static String TOKENMAP = "tokenMap";
-	public static String URL = "https://api.weixin.qq.com/cgi-bin/token";
-	public static String APP_ID = "wx6b8ffba0cb003c8e";
-	public static String APP_SECRET = "00138927f11e3bdd5bb5953ece2e5014";
 	/**
 	 *验证是否过期,获取 ACCESS_TOKEN
 	 */
@@ -40,14 +38,14 @@ public class WeixinAccessTokenMsg{
 	 * 获取文件的InputStream
 	 */
 	private static InputStream weCharInputStream(){
-		FileUtil.mkdir(TemplateMsg.BASE_DIR);
-    	File f= new File(TemplateMsg.BASE_DIR+PropertiesUtil.PROPERTIES_ACCESS_TOKEN);
+//		FileUtil.mkdir(WeChartGlobal.BASE_DIR);
+    	File f= new File(PropertiesUtil.PROPERTIES_ACCESS_TOKEN);//WeChartGlobal.BASE_DIR+
     	if(!f.exists()){
     		List<String> list = new ArrayList<String>();
     		list.add(PropertiesUtil.ACCESS_TOKEN+"=init");
     		list.add(PropertiesUtil.EXPIRATION_TIME+"=7200");
     		try {
-				FileUtil.listToFile(list, TemplateMsg.BASE_DIR+PropertiesUtil.PROPERTIES_ACCESS_TOKEN);
+				FileUtil.listToFile(list, PropertiesUtil.PROPERTIES_ACCESS_TOKEN);//WeChartGlobal.BASE_DIR+
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -78,7 +76,7 @@ public class WeixinAccessTokenMsg{
 		//https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx6b8ffba0cb003c8e&secret=00138927f11e3bdd5bb5953ece2e5014
 		//如果失败提示报文:{"errcode":40164,"errmsg":"invalid ip 117.71.48.31, not in whitelist hint: [jq01132976]"}
 		try {
-			returnData=UrlReqUtil.post(URL, "grant_type=client_credential&appid="+APP_ID+"&secret="+APP_SECRET);
+			returnData=UrlReqUtil.post(WeChartGlobal.URL_TOKEN, "grant_type=client_credential&appid="+WeChartGlobal.APP_ID+"&secret="+WeChartGlobal.APP_SECRET);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -86,21 +84,31 @@ public class WeixinAccessTokenMsg{
 			return null;
 		}
 		JSONObject json=JSONObject.fromObject(returnData);
-		if(json.containsKey(PropertiesUtil.ACCESS_TOKEN)){
-			if(json.get(PropertiesUtil.ACCESS_TOKEN)!=null&&!json.get(PropertiesUtil.ACCESS_TOKEN).equals("")){
-				accessToken = json.get(PropertiesUtil.ACCESS_TOKEN).toString();
-				//同时更新文件
-				URL fileUrl = null;//WeixinAccessTokenMsg.class.getResource(PropertiesUtil.PROPERTIES_ACCESS_TOKEN);//得到文件路径
-				try {//file:/d:/wechar-openid/accessToken.properties
-					fileUrl = new URL("file:/"+TemplateMsg.BASE_DIR+PropertiesUtil.PROPERTIES_ACCESS_TOKEN);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
+		if(json.containsKey(WeChartGlobal.ERRCODE)){
+			String errcode = json.getString(WeChartGlobal.ERRCODE);
+			if(errcode!=null){
+				accessToken = json.getString(WeChartGlobal.ERRMSG);
+				FileUtil.createTxt(WeChartGlobal.ledname, accessToken, WeChartGlobal.charsetName);//WeChartGlobal.BASE_DIR+
+				accessToken = null;
+			}
+		}
+		else{
+			if(json.containsKey(PropertiesUtil.ACCESS_TOKEN)){
+				if(json.get(PropertiesUtil.ACCESS_TOKEN)!=null&&!json.get(PropertiesUtil.ACCESS_TOKEN).equals("")){
+					accessToken = json.get(PropertiesUtil.ACCESS_TOKEN).toString();
+					//同时更新文件
+					URL fileUrl = null;//WeixinAccessTokenMsg.class.getResource(PropertiesUtil.PROPERTIES_ACCESS_TOKEN);//得到文件路径
+					try {//file:/d:/wechar-openid/accessToken.properties
+						fileUrl = new URL("file:/"+PropertiesUtil.PROPERTIES_ACCESS_TOKEN);//WeChartGlobal.BASE_DIR+
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
+					Long expires_in = DateUtil.addSecond(Integer.parseInt(json.get(PropertiesUtil.EXPIRATION_TIME).toString()));
+					PropertiesUtil.saveKey(PropertiesUtil.PROPERTIES_ACCESS_TOKEN, PropertiesUtil.ACCESS_TOKEN,
+							accessToken,fileUrl,ips);
+					PropertiesUtil.saveKey(PropertiesUtil.PROPERTIES_ACCESS_TOKEN, PropertiesUtil.EXPIRATION_TIME, 
+							expires_in+"",fileUrl,ips);
 				}
-				Long expires_in = DateUtil.addSecond(Integer.parseInt(json.get(PropertiesUtil.EXPIRATION_TIME).toString()));
-				PropertiesUtil.saveKey(PropertiesUtil.PROPERTIES_ACCESS_TOKEN, PropertiesUtil.ACCESS_TOKEN,
-						accessToken,fileUrl,ips);
-				PropertiesUtil.saveKey(PropertiesUtil.PROPERTIES_ACCESS_TOKEN, PropertiesUtil.EXPIRATION_TIME, 
-						expires_in+"",fileUrl,ips);
 			}
 		}
 		return accessToken;
