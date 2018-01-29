@@ -75,11 +75,7 @@ public class WeixinAccessTokenMsg{
 		//测试IP是否可以获取token
 		//https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx6b8ffba0cb003c8e&secret=00138927f11e3bdd5bb5953ece2e5014
 		//如果失败提示报文:{"errcode":40164,"errmsg":"invalid ip 117.71.48.31, not in whitelist hint: [jq01132976]"}
-		try {
-			returnData=UrlReqUtil.post(WeChartGlobal.URL_TOKEN, "grant_type=client_credential&appid="+WeChartGlobal.APP_ID+"&secret="+WeChartGlobal.APP_SECRET);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		returnData=UrlReqUtil.post(WeChartGlobal.URL_TOKEN, "grant_type=client_credential&appid="+WeChartGlobal.APP_ID+"&secret="+WeChartGlobal.APP_SECRET);
 		if(returnData==null){
 			return null;
 		}
