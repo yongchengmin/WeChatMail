@@ -34,7 +34,6 @@ public class WeChatPanel {
 	protected final static String file_no = "File not generated";
 	protected final static String CHARACTER = "utf-8";
 	public static boolean send = false;
-	
 	public static void sendChat() throws IOException{
 		final String port = PropertiesUtil.getPropertiesKey(WeChartGlobal.PORTMESG, WeChartGlobal.PORT);
 		

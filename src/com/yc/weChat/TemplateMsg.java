@@ -9,14 +9,15 @@ import com.yc.utils.wechar.Template;
 import com.yc.utils.wechar.TemplateParam;
 public class TemplateMsg {
 	public static String sendTemplateMsg(String requestUrl,String token,String vin,String status,String remark
-			,String openid){
+			,String openid,String url){
 		//用户在该公众号下的openid
 		//3 调用模板消息的发送方法
 		Template tem=new Template();
 		tem.setTemplateId(WeChartGlobal.templateId);//为模板id 
 		tem.setTopColor(WeChartGlobal.topColor);
 		tem.setToUser(openid);
-		tem.setUrl("");
+		tem.setUrl(url);//根据不用的底盘号,传递不同的URL,前端人员完成
+		//"https://mp.weixin.qq.com/"
 				
 		List<TemplateParam> paras=new ArrayList<TemplateParam>();
 		paras.add(new TemplateParam("orderNumber",":"+vin,"#0044BB"));

@@ -92,9 +92,16 @@ public class WeChatSend {
 	}
 	public static void getTemplateMsg(String mesg) {
 		String[] ss = mesg.split(StringUtils.spilt1);
-		sendTemplateMsg(ss[0], ss[1]);
+		if(ss.length>0){
+			if(ss.length==2){
+				sendTemplateMsg(ss[0], ss[1],"");
+			}else if(ss.length==3){
+				sendTemplateMsg(ss[0], ss[1], ss[2]);
+			}
+		}
 	}
-	private static void sendTemplateMsg(String vin,String status) {
+	//url:报表...
+	private static void sendTemplateMsg(String vin,String status,String url) {
 		// TODO Auto-generated method stub
 //		String type = "";
 		//业务参数
@@ -113,13 +120,13 @@ public class WeChatSend {
 				for(int i = 1 ; i<=size; i++){
 					String openid = PropertiesUtil.getPropertiesKey(WeChartGlobal.PORTMESG, WeChartGlobal.OPENID+i);
 					if(openid!=null){
-						String result = TemplateMsg.sendTemplateMsg(requestUrl, token, vin, status, remark, openid);
+						String result = TemplateMsg.sendTemplateMsg(requestUrl, token, vin, status, remark, openid,url);
 						//{"":40001,"errmsg":"invalid credential, access_token is invalid or not latest hint: [CYHbfa0259vr44!]"}
 						String errcode = JsonTools.getJsonKey(result, "errcode");
 						if(errcode!=null && "40001".equals(errcode)){//要重新获取 access_token
 							token = WeixinAccessTokenMsg.weCharAccessToken();
 							requestUrl =WeChartGlobal.URL.replace(WeChartGlobal.ACCESS_TOKEN,token);
-							result = TemplateMsg.sendTemplateMsg(requestUrl, token, vin, status, remark, openid);
+							result = TemplateMsg.sendTemplateMsg(requestUrl, token, vin, status, remark, openid,url);
 							errcode = JsonTools.getJsonKey(result, "errcode");
 						}
 						if(errcode!=null && "0".equals(errcode)){
