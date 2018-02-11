@@ -15,8 +15,8 @@ public interface WeChartGlobal {
 	
 	static final String TOKENMAP = "tokenMap";
 	static final String URL_TOKEN = "https://api.weixin.qq.com/cgi-bin/token";
-	static final String APP_ID = "wx6b8ffba0cb003c8e";
-	static final String APP_SECRET = "00138927f11e3bdd5bb5953ece2e5014";
+	static final String APP_ID = "wx6b8ffba0cb003c8e";//开发者ID
+	static final String APP_SECRET = "app_secret";//开发者密码
 	
 	static final String OPENIDS = "openids";//存放总个数
 	static final String OPENID = "openid";//存放对应的ID

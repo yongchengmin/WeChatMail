@@ -72,10 +72,11 @@ public class WeixinAccessTokenMsg{
 	private static String getToken(InputStream ips){
 		String accessToken = null;
 		String returnData = null;
+		String app_secret = PropertiesUtil.getPropertiesKey(WeChartGlobal.PORTMESG, WeChartGlobal.APP_SECRET);
 		//测试IP是否可以获取token
 		//https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx6b8ffba0cb003c8e&secret=00138927f11e3bdd5bb5953ece2e5014
 		//如果失败提示报文:{"errcode":40164,"errmsg":"invalid ip 117.71.48.31, not in whitelist hint: [jq01132976]"}
-		returnData=UrlReqUtil.post(WeChartGlobal.URL_TOKEN, "grant_type=client_credential&appid="+WeChartGlobal.APP_ID+"&secret="+WeChartGlobal.APP_SECRET);
+		returnData=UrlReqUtil.post(WeChartGlobal.URL_TOKEN, "grant_type=client_credential&appid="+WeChartGlobal.APP_ID+"&secret="+app_secret);
 		if(returnData==null){
 			return null;
 		}

@@ -1,1 +1,1 @@
-LJ11KBACXG1501125#发货单发运#http://192.168.11.137:4999/quiee/reportJsp/showReport.jsp?raq=pcl_vinView.raq&vin=LJ11KBACXG1501125
+token#token
