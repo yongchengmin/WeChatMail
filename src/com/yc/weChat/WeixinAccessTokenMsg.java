@@ -94,17 +94,23 @@ public class WeixinAccessTokenMsg{
 				if(json.get(PropertiesUtil.ACCESS_TOKEN)!=null&&!json.get(PropertiesUtil.ACCESS_TOKEN).equals("")){
 					accessToken = json.get(PropertiesUtil.ACCESS_TOKEN).toString();
 					//同时更新文件
-					URL fileUrl = null;//WeixinAccessTokenMsg.class.getResource(PropertiesUtil.PROPERTIES_ACCESS_TOKEN);//得到文件路径
-					try {//file:/d:/wechar-openid/accessToken.properties
-						fileUrl = new URL("file:/"+PropertiesUtil.PROPERTIES_ACCESS_TOKEN);//WeChartGlobal.BASE_DIR+
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-					}
+					File f= new File(PropertiesUtil.PROPERTIES_ACCESS_TOKEN);
 					Long expires_in = DateUtil.addSecond(Integer.parseInt(json.get(PropertiesUtil.EXPIRATION_TIME).toString()));
-					PropertiesUtil.saveKey(PropertiesUtil.PROPERTIES_ACCESS_TOKEN, PropertiesUtil.ACCESS_TOKEN,
-							accessToken,fileUrl,ips);
-					PropertiesUtil.saveKey(PropertiesUtil.PROPERTIES_ACCESS_TOKEN, PropertiesUtil.EXPIRATION_TIME, 
-							expires_in+"",fileUrl,ips);
+					PropertiesUtil.saveKey(f, PropertiesUtil.ACCESS_TOKEN,
+							accessToken,ips);
+					PropertiesUtil.saveKey(f, PropertiesUtil.EXPIRATION_TIME, 
+							expires_in+"",ips);
+					//更新文件时bug:会在文件所在系统盘根目录下new
+//					URL fileUrl = null;//WeixinAccessTokenMsg.class.getResource(PropertiesUtil.PROPERTIES_ACCESS_TOKEN);//得到文件路径
+//					try {//file:/d:/wechar-openid/accessToken.properties
+//						fileUrl = new URL("file:/"+PropertiesUtil.PROPERTIES_ACCESS_TOKEN);//WeChartGlobal.BASE_DIR+
+//					} catch (MalformedURLException e) {
+//						e.printStackTrace();
+//					}
+//					PropertiesUtil.saveKey(PropertiesUtil.PROPERTIES_ACCESS_TOKEN, PropertiesUtil.ACCESS_TOKEN,
+//							accessToken,fileUrl,ips);
+//					PropertiesUtil.saveKey(PropertiesUtil.PROPERTIES_ACCESS_TOKEN, PropertiesUtil.EXPIRATION_TIME, 
+//							expires_in+"",fileUrl,ips);
 				}
 			}
 		}
