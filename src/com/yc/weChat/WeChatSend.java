@@ -8,9 +8,12 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.yc.WeChartGlobal;
 import com.yc.WeChatPanel;
+import com.yc.email.MailsSend;
 import com.yc.utils.esbUtils.FileUtil;
 import com.yc.utils.esbUtils.JsonTools;
 import com.yc.utils.esbUtils.StringUtils;
@@ -57,6 +60,9 @@ public class WeChatSend {
 				
 //				FileUtil.mkdir(WeChartGlobal.BASE_DIR);
 				FileUtil.createTxt(WeChartGlobal.ledname, getLine, WeChartGlobal.charsetName);//WeChartGlobal.BASE_DIR+
+				
+				String createDate = new SimpleDateFormat("yyMMddHHmmssSSS").format(new Date());
+				FileUtil.createTxt(WeChartGlobal.mailPath+"/led-wechat"+MailsSend.spilt_+createDate+".txt", getLine, WeChartGlobal.charsetName);
 				
 				getTemplateMsg(getLine);
 				
@@ -105,7 +111,7 @@ public class WeChatSend {
 		// TODO Auto-generated method stub
 //		String type = "";
 		//业务参数
-		String remark = "感谢您的关注与支持";
+		String remark = PropertiesUtil.getPropertiesKey(WeChartGlobal.PORTMESG, WeChartGlobal.REMARK);
 		String nums = PropertiesUtil.getPropertiesKey(WeChartGlobal.PORTMESG, WeChartGlobal.OPENIDS);
 		int size = 0;
 		try {
