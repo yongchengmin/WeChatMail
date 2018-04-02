@@ -192,7 +192,7 @@ public class WeChatPanel {
 		File file =new File(WeChartGlobal.mailPath);
 		File[] emailFiles = file.listFiles();
 		if (emailFiles != null && emailFiles.length >= line) {
-			if(j>2){
+			if(j>lines){
 				frame.remove(panelMail);
         		
         		jtaMail = null;jspMail = null;panelMail = null;
